@@ -14,8 +14,6 @@ export async function handleSignIn(formData: FormData) {
     redirect: true,
   });
 
-  console.log({ result });
-
   // Redirect to home page after successful login
   redirect("/(protected)");
 }

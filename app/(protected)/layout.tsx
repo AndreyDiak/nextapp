@@ -37,7 +37,7 @@ export default async function ProtectedLayout({
     <html lang="en">
       <body className={cn(`${roboto.variable} antialiased`, roboto.className)}>
         <Header />
-        <main className="container mx-auto max-w-7xl">{children}</main>
+        <main className="container mx-auto max-w-7xl py-6">{children}</main>
       </body>
     </html>
   );
@@ -63,9 +63,9 @@ const items = [
 
 export const Header = () => {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 w-full border-b border-gray-500/30">
       <div className="container mx-auto max-w-7xl flex h-16 items-center justify-between">
-        <div className="text-xl font-bold bg-black text-white w-8 h-8 rounded-full flex items-center justify-center">
+        <div className="text-xl font-bold bg-gray-900 text-white w-8 h-8 rounded-full flex items-center justify-center">
           S
         </div>
         <NavigationMenu viewport={false}>
@@ -74,7 +74,10 @@ export const Header = () => {
               <NavigationMenuItem key={label}>
                 <NavigationMenuLink asChild>
                   <Link href={href}>
-                    <Icon strokeWidth={2} className="text-black size-5" />
+                    <Icon
+                      strokeWidth={2}
+                      className="text-gray-900 size-5 hover:text-black"
+                    />
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
