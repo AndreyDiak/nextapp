@@ -50,14 +50,14 @@ const items = [
     icon: HomeIcon,
   },
   {
-    label: "Profile",
-    href: "/profile",
-    icon: UserIcon,
-  },
-  {
     label: "Settings",
     href: "/settings",
     icon: SettingsIcon,
+  },
+  {
+    label: "Profile",
+    href: "/profile",
+    icon: UserIcon,
   },
 ];
 

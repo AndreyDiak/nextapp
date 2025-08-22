@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth";
 import { Geist, Geist_Mono } from "next/font/google";
 import { redirect } from "next/navigation";
 
+import "@/app/globals.css";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
