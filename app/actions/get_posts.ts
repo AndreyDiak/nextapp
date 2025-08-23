@@ -32,11 +32,7 @@ export async function getPosts() {
             },
           },
         },
-        _count: {
-          select: {
-            comments: true,
-          },
-        },
+        _count: true,
       },
       orderBy: {
         createdAt: "desc",
