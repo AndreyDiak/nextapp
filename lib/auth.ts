@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -6,23 +8,36 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        username: { label: "Username", type: "string" },
+        name: { label: "Username", type: "string" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Add your authentication logic here
-        // This is a basic example - you should implement proper authentication
-        if (
-          credentials?.username === "root" &&
-          credentials?.password === "root"
-        ) {
-          return {
-            id: "1",
-            email: "root",
-            name: "root",
-          };
+        if (!credentials?.name || !credentials?.password) {
+          return null;
         }
-        return null;
+
+        const user = await prisma.user.findUnique({
+          where: { name: credentials.name },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        const isValidPassword = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isValidPassword) {
+          return null;
+        }
+
+        return {
+          id: user.id.toString(),
+          name: user.name,
+          email: user.email,
+        };
       },
     }),
   ],
@@ -40,8 +55,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
-        console.log({ token, session });
+      if (token.id) {
+        session.user!.id = token.id as string;
       }
       return session;
     },

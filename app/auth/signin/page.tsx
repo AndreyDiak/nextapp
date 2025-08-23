@@ -1,10 +1,12 @@
 "use client";
 
+import { createUser } from "@/app/actions/create_user";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -41,11 +43,11 @@ export default function SignIn() {
       setError("");
 
       const formData = new FormData(e.target as HTMLFormElement);
-      const username = formData.get("username");
+      const name = formData.get("name");
       const password = formData.get("password");
 
       const response = await signIn("credentials", {
-        username,
+        name,
         password,
         redirect: false,
       });
@@ -61,23 +63,41 @@ export default function SignIn() {
 
   const handleSignUp = useCallback(async (e: React.FormEvent) => {
     startTransition(async () => {
+      setError("");
       e.preventDefault();
       const formData = new FormData(e.target as HTMLFormElement);
-      const username = formData.get("username");
-      const password = formData.get("password");
+      const name = String(formData.get("name"));
+      const email = String(formData.get("email"));
+      const password = String(formData.get("password"));
+      const confirmPassword = String(formData.get("confirm-password"));
 
-      // const response = await signIn("credentials", {
-      //   username,
-      //   password,
-      //   redirect: false,
-      // });
+      if (!name || !email || !password || !confirmPassword) {
+        setError("Пожалуйста, заполните все поля");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Пароли не совпадают");
+        return;
+      }
 
-      // if (response?.error) {
-      //   setError("Invalid credentials");
-      // } else {
-      //   router.push("/");
-      //   router.refresh();
-      // }
+      try {
+        await createUser({ name, email, password });
+
+        const response = await signIn("credentials", {
+          name,
+          password,
+          redirect: false,
+        });
+
+        if (response?.error) {
+          setError("Пользователь создан, но вход не выполнен");
+        } else {
+          router.push("/");
+          router.refresh();
+        }
+      } catch (err) {
+        setError("Ошибка сети или сервера");
+      }
     });
   }, []);
 
@@ -159,6 +179,9 @@ export default function SignIn() {
             </TabsContent>
           </Tabs>
         </CardContent>
+        <CardFooter>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+        </CardFooter>
       </Card>
     </div>
   );

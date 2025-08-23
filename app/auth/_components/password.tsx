@@ -20,6 +20,7 @@ export const PasswordField = ({ type = "password" }: Props) => {
         <Input
           id={type}
           type={showPassword ? "text" : "password"}
+          name={type}
           placeholder="••••••••"
           className="pl-10 pr-10 border-blue-200 focus:border-blue-400 focus:ring-blue-400 bg-white/80"
           required
