@@ -1,25 +1,13 @@
+import { getCurrentUserId } from "@/app/actions/auth";
 import { getPosts } from "@/app/actions/get_posts";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MessageSquareMore } from "lucide-react";
+import { DateDisplay } from "@/components/ui/date-display";
 import { memo } from "react";
-
-type Post = Awaited<ReturnType<typeof getPosts>>["posts"][number];
-
-const actions = [
-  {
-    icon: Heart,
-    label: "Like",
-    getCount: (post: Post) => post.likesCount,
-  },
-  {
-    icon: MessageSquareMore,
-    label: "Comment",
-    getCount: (post: Post) => post._count.comments,
-  },
-];
+import { PostActions } from "./post_actions";
 
 export const PostsList = memo(async () => {
   const { posts } = await getPosts();
+  const userId = await getCurrentUserId();
 
   return (
     <div className="space-y-4">
@@ -37,15 +25,13 @@ export const PostsList = memo(async () => {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium text-gray-900">{post.author.name}</p>
-                <p>
-                  {new Intl.DateTimeFormat("ru-RU", {
-                    day: "numeric",
-                    month: "long",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }).format(new Date(post.createdAt))}
-                </p>
+                <h3 className="font-medium text-gray-900">
+                  {post.author.name}
+                </h3>
+                <DateDisplay
+                  date={post.createdAt}
+                  className="text-xs text-gray-500"
+                />
               </div>
             </div>
           </header>
@@ -68,17 +54,7 @@ export const PostsList = memo(async () => {
           )}
 
           <footer className="flex items-center justify-between pt-4 border-t border-gray-100">
-            <div className="flex items-center space-x-4">
-              {actions.map(({ icon: Icon, label, getCount }) => (
-                <button
-                  key={label}
-                  className="flex items-center space-x-1 text-gray-500 hover:text-blue-600 transition-colors"
-                >
-                  <Icon strokeWidth={1} />
-                  <span>{getCount(post)}</span>
-                </button>
-              ))}
-            </div>
+            <PostActions post={post} userId={userId} />
           </footer>
         </article>
       ))}
