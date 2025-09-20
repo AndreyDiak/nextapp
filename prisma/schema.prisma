@@ -26,7 +26,7 @@ model Post {
   authorId   Int
   comments   Comment[]
   tags       Tag[]     
-  likesCount Int        @default(0)
+  likedBy    Int[]      @default([])
 }
 
 model Comment {
